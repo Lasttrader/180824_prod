@@ -15,12 +15,10 @@ loan_LE	= pickle.load(open('../180824_prod/models/loan_LE.pkl', 'rb'))
 contact_LE	= pickle.load(open('../180824_prod/models/contact_LE.pkl', 'rb'))
 month_LE	= pickle.load(open('../180824_prod/models/month_LE.pkl', 'rb'))
 poutcome_LE	= pickle.load(open('../180824_prod/models/poutcome_LE.pkl', 'rb'))
-
+#predict le
 y_LE = pickle.load(open('../180824_prod/models/y_LE.pkl', 'rb'))
-
 #scaler
 num_scaler = pickle.load(open('../180824_prod/models/num_scaler.pkl', 'rb'))
-
 #ML models
 kNN = pickle.load(open('../180824_prod/models/kNN.pkl', 'rb'))
 
@@ -60,7 +58,6 @@ X_cat_from_keyboard = ['unemployed',
                        'failure'
                         ]
 # print(X_cat_from_keyboard)
-
 le_list = [job_LE,	
            marital_LE,	
            education_LE,	
@@ -76,7 +73,6 @@ for i in range(len(X_cat_from_keyboard)):
     x_cat = le_list[i].transform([X_cat_from_keyboard[i]])[0]
     # print(x_cat)
     X_le_list.append(x_cat)
-
 print('X_cat_le:', X_le_list)
 
 ##num
@@ -90,7 +86,6 @@ X_nums_from_keyboard =[30,
 print('X_nums', X_nums_from_keyboard)
 
 ##объединить категориальные и числовые (в том же порядке, как и при обучении)
-
 X = []
 X.extend(X_le_list)
 X.extend(X_nums_from_keyboard)
