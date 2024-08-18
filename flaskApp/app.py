@@ -4,7 +4,8 @@ from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 from sklearn.neighbors import KNeighborsClassifier
 from flask import (Flask,
                    request,
-                   jsonify)
+                   jsonify,
+                   render_template)
 
 #for api
 import  requests
@@ -32,66 +33,94 @@ kNN = pickle.load(open('../flaskApp/models/kNN.pkl', 'rb'))
 #app
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/', methods = ['POST', 'GET'])
 def main():
-    #preprocessing
-    ##categorical
-    X_cat_from_keyboard = ['unemployed',
-                        'married',
-                        'primary',
-                        'no',
-                        'no',
-                        'yes',
-                        'cellular',
-                        'may',
-                        'failure'
-                            ]
-    # print(X_cat_from_keyboard)
-    le_list = [job_LE,	
-            marital_LE,	
-            education_LE,	
-            default_LE,
-            housing_LE,
-            loan_LE,
-            contact_LE,
-            month_LE,
-            poutcome_LE]
+    if request.method == 'GET':
+        return render_template('main.html')
+    
+    if request.method == 'POST':
+        #get_data
+        #получаем данные с формы
+        #cat_cols
+        job	= request.form['job']
+        marital	= request.form['marital']
+        education	= request.form['education']
+        default	= request.form['default']
+        housing= request.form['housing']
+        loan	= request.form['loan']
+        contact= request.form['contact']
+        month= request.form['month']
+        poutcome= request.form['poutcome']
+        #num_cols
+        age	= float(request.form['age'])
+        balance	= float(request.form['balance'])
+        day	= float(request.form['day'])
+        duration = float(request.form['duration'])
+        campaign = float(request.form['campaign'])
+        pdays	 = float(request.form['pdays'])
+        previous = float(request.form['previous'])
 
-    X_le_list = [] #под закодированные признаки
-    for i in range(len(X_cat_from_keyboard)):
-        x_cat = le_list[i].transform([X_cat_from_keyboard[i]])[0]
-        # print(x_cat)
-        X_le_list.append(x_cat)
-    print('X_cat_le:', X_le_list)
+        #preprocessing
+        ##categorical
+        X_cat_from_form = [job,
+                           marital,
+                           education,
+                           default,
+                           housing,
+                           loan,
+                           contact,
+                           month,
+                           poutcome]
+        #print(X_cat_from_form)
+        
+        
+        le_list = [job_LE,	
+                marital_LE,	
+                education_LE,	
+                default_LE,
+                housing_LE,
+                loan_LE,
+                contact_LE,
+                month_LE,
+                poutcome_LE]
 
-    ##num
-    X_nums_from_keyboard =[30,
-                        1787,
-                        16,
-                        199,
-                        4,
-                        330,
-                        0]
-    print('X_nums', X_nums_from_keyboard)
+        X_le_list = [] #под закодированные признаки
+        for i in range(len(X_cat_from_form)):
+            x_cat = le_list[i].transform([X_cat_from_form[i]])[0]
+            # print(x_cat)
+            X_le_list.append(x_cat)
+        #print('X_cat_le:', X_le_list)
 
-    ##объединить категориальные и числовые (в том же порядке, как и при обучении)
-    X = []
-    X.extend(X_le_list)
-    X.extend(X_nums_from_keyboard)
-    print('X:', X)
+        ##num
+        X_nums_from_form =[age, 
+                               balance, 
+                               day, 
+                               duration,
+                               campaign,
+                               pdays,
+                               previous]
+        #print('X_nums', X_nums_from_form)
 
-    #scaler
-    X_scaled = num_scaler.transform([X])
-    print('X_scaled:', X_scaled)
+        ##объединить категориальные и числовые (в том же порядке, как и при обучении)
+        X = []
+        X.extend(X_le_list)
+        X.extend(X_nums_from_form)
+        #print('X:', X)
 
-    #predict
-    prediction = kNN.predict(X_scaled)
-    print(prediction)
+        #scaler
+        X_scaled = num_scaler.transform([X])
+        #print('X_scaled:', X_scaled)
 
-    #result
-    result = y_LE.inverse_transform(prediction)
-    print('Выдавать клиентский договор? Ответ - ', result)
-    return f'Выдавать клиентский договор? Ответ - {result}'
+        #predict
+        prediction = kNN.predict(X_scaled)
+        print(prediction)
+
+        #result
+        result = y_LE.inverse_transform(prediction)
+        #print('Выдавать клиентский договор? Ответ - ', result)
+        
+        return render_template('predict.html', 
+                               result = result)
 
 
 #API 
@@ -109,4 +138,4 @@ def api_message():
 
 #инструкция исполнения
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()

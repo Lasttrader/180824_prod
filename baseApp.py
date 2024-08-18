@@ -34,6 +34,7 @@ kNN = pickle.load(open('../180824_prod/models/kNN.pkl', 'rb'))
 # contact= input()
 # month= input()
 # poutcome= input()
+
 # #num_cols
 # age	= float(input())
 # balance	= float(input())

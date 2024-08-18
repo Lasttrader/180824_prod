@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        div {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: inline-block;
+            width: 120px;
+        }
+
+        fieldset {
+            background: #e1eff2;
+        }
+
+        legend {
+            padding: 20px 0;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<head>
+    <h1>ОТВЕТ КЛИЕНТУ</h1>
+</head>
+
+<body>
+    <div>
+        {%if result %}
+        <p>Ответ клиенту банка</p>
+        <p>{{result}}</p>
+        {% endif %}
+    </div>
+
+</body>
+
+</html>
